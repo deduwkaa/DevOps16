@@ -5,11 +5,17 @@
 
 class FuncA {
 public:
-    // Реалізація для 3 елементів
-    double calculate() {
+    // Функція calculate для обчислення суми перших n елементів ряду
+    /*
+     * Class FuncA
+     * Function calculate(int n, double x)
+     * Parameters:
+     *   n - кількість елементів ряду
+     *   x - аргумент функції ln(1+x)
+     */
+    double calculate(int n, double x) {
         double result = 0;
-        double x = 1; // Встановіть x для прикладу
-        for (int i = 1; i <= 3; ++i) {
+        for (int i = 1; i <= n; ++i) {
             result += pow(-1, i - 1) * pow(x, i) / i;
         }
         return result;
