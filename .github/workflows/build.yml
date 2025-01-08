@@ -1,14 +1,16 @@
-name: C++ Build and Tarball
+name: C++ Build, Tarball, and Debian Package
 
 on:
   push:
     branches:
       - branchMake
       - branchAutomake  # Додаємо branchAutomake для створення tarball
+      - branchAutoPackage  # Додаємо branchAutoPackage для створення deb пакету
   pull_request:
     branches:
       - branchMake
       - branchAutomake
+      - branchAutoPackage
 
 jobs:
   build:
@@ -52,3 +54,23 @@ jobs:
         with:
           name: DevOps16-tarball
           path: DevOps16-1.0.tar.gz  # Шлях до створеного tarball
+
+  build_deb:
+    runs-on: ubuntu-latest
+    needs: build  # Залежність від попереднього job
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: sudo apt-get install build-essential dpkg-dev
+
+      - name: Build Debian package
+        run: debuild -us -uc
+
+      - name: Upload Debian package artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: DevOps16-deb-package
+          path: ../*.deb  # Шлях до створеного deb пакету
