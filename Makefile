@@ -1,4 +1,4 @@
-TARGET = DevOps16
+TARGET = devops16
 CXX = g++
 CXXFLAGS = -Wall -std=c++11
 

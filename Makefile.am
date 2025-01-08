@@ -1,10 +1,10 @@
-bin_PROGRAMS = DevOps16
+bin_PROGRAMS = devops16
 DevOps16_SOURCES = main.cpp
 
-DEB_INSTALL = debian/DevOps16.install
+DEB_INSTALL = debian/devops16.install
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = DevOps16.pc
+pkgconfig_DATA = devops16.pc
 
 dist_pkgdata_DATA = $(DEB_INSTALL)
 

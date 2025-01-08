@@ -1,0 +1,11 @@
+Source: devops16
+Section: math
+Priority: optional
+Maintainer: Danyl Rymar <rymar.danyl@lll.kpi.ua>
+Build-Depends: debhelper (>= 12), g++
+Standards-Version: 4.5.0
+Homepage: https://github.com/deduwkaa/DevOps16
+Package: devops16
+Architecture: amd64
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: DevOps16 is a C++ program for computing sums of Taylor series expansions for mathematical functions.
