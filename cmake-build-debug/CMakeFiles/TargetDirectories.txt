@@ -1,0 +1,3 @@
+/home/ubuntu/CLionProjects/DevOps16/cmake-build-debug/CMakeFiles/DevOps16.dir
+/home/ubuntu/CLionProjects/DevOps16/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/ubuntu/CLionProjects/DevOps16/cmake-build-debug/CMakeFiles/rebuild_cache.dir

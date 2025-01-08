@@ -1,0 +1,4 @@
+/snap/clion/311/bin/cmake/linux/aarch64/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/snap/clion/311/bin/ninja/linux/aarch64/ninja -G Ninja -S /home/ubuntu/CLionProjects/DevOps16 -B /home/ubuntu/CLionProjects/DevOps16/cmake-build-debug
+-- Configuring done (0.4s)
+-- Generating done (0.2s)
+-- Build files have been written to: /home/ubuntu/CLionProjects/DevOps16/cmake-build-debug
