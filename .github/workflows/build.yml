@@ -1,12 +1,14 @@
-name: C++ Build
+name: C++ Build and Tarball
 
 on:
   push:
     branches:
       - branchMake
+      - branchAutomake  # Додаємо branchAutomake для створення tarball
   pull_request:
     branches:
       - branchMake
+      - branchAutomake
 
 jobs:
   build:
@@ -23,4 +25,30 @@ jobs:
         run: make
 
       - name: Run tests (if any)
-        run: ./my_program # Якщо є тести або програма
+        run: ./DevOps16 # Запуск програми або тестів
+
+  build_tarball:
+    runs-on: ubuntu-latest
+    needs: build  # Залежність від попереднього job
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install automake, autoconf
+        run: sudo apt-get install automake autoconf
+
+      - name: Generate configuration files
+        run: autoreconf --install
+
+      - name: Configure the project
+        run: ./configure
+
+      - name: Create tarball
+        run: make dist
+
+      - name: Upload tarball artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: DevOps16-tarball
+          path: DevOps16-1.0.tar.gz  # Шлях до створеного tarball
