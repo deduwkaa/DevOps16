@@ -1,8 +1,8 @@
-TARGET = my_program
+TARGET = DevOps16
 CXX = g++
 CXXFLAGS = -Wall -std=c++11
 
-SRCS = main.cpp funcA.cpp
+SRCS = main.cpp FuncA.h
 OBJS = $(SRCS:.cpp=.o)
 
 $(TARGET): $(OBJS)
