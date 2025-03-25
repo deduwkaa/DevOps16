@@ -32,7 +32,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install automake, autoconf, and other dependencies
         run: sudo apt-get install -y automake autoconf dpkg-dev
@@ -47,7 +47,7 @@ jobs:
         run: make dist
 
       - name: Upload tarball artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: devops16-tarball
           path: devops16-*.tar.gz  # Corrected path to match the generated tarball
@@ -58,7 +58,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install dependencies for Debian package
         run: sudo apt-get install -y build-essential dpkg-dev
@@ -67,7 +67,7 @@ jobs:
         run: debuild -us -uc
 
       - name: Upload Debian package artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: devops16-deb-package
           path: ../*.deb  # Correct path to the generated .deb file
