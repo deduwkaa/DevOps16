@@ -3,7 +3,7 @@ bin_PROGRAMS = devops16
 devops16_SOURCES = main.cpp
 
 # Files for installation and packaging
-DEB_INSTALL = debian/devops16.install
+DEB_INSTALL = debian/DevOps16.install
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = devops16.pc
