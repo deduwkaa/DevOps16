@@ -1,7 +1,7 @@
 # configure.ac
 
 AC_PREREQ([2.69])                    # Minimum version of Autoconf
-AC_INIT([devops16], [1.0.0], [youremail@example.com]) # Project name, version, email
+AC_INIT([devops16], [1.0.0], [rymar.danyl@lll.kpi.ua]) # Project name, version, email
 AM_INIT_AUTOMAKE([foreign])         # Initializes Automake with the 'foreign' option
 AC_PROG_CXX                          # Checks for a C++ compiler
 AC_PROG_CC                           # Checks for a C compiler
