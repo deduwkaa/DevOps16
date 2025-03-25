@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - branchMake
-      - branchAutomake  # Додаємо branchAutomake для створення tarball
-      - branchAutoPackage  # Додаємо branchAutoPackage для створення deb пакету
+      - branchAutomake  # Add this branch to create a tarball
+      - branchAutoPackage  # Add this branch to create a deb package
   pull_request:
     branches:
       - branchMake
@@ -21,21 +21,21 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Set up C++ environment
-        run: sudo apt-get install build-essential
+        run: sudo apt-get install -y build-essential
 
       - name: Build the project
         run: make
 
   build_tarball:
     runs-on: ubuntu-latest
-    needs: build  # Залежність від попереднього job
+    needs: build  # Depends on the 'build' job
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install automake, autoconf
-        run: sudo apt-get install automake autoconf
+      - name: Install automake, autoconf, and other dependencies
+        run: sudo apt-get install -y automake autoconf dpkg-dev
 
       - name: Generate configuration files
         run: autoreconf --install
@@ -49,19 +49,19 @@ jobs:
       - name: Upload tarball artifact
         uses: actions/upload-artifact@v2
         with:
-          name: DevOps16-tarball
-          path: devops16_1.0.orig.tar.gz  # Шлях до створеного tarball
+          name: devops16-tarball
+          path: devops16-*.tar.gz  # Corrected path to match the generated tarball
 
   build_deb:
     runs-on: ubuntu-latest
-    needs: build  # Залежність від попереднього job
+    needs: build_tarball  # Depends on the 'build_tarball' job
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install dependencies
-        run: sudo apt-get install build-essential dpkg-dev
+      - name: Install dependencies for Debian package
+        run: sudo apt-get install -y build-essential dpkg-dev
 
       - name: Build Debian package
         run: debuild -us -uc
@@ -69,5 +69,5 @@ jobs:
       - name: Upload Debian package artifact
         uses: actions/upload-artifact@v2
         with:
-          name: DevOps16-deb-package
-          path: ../*.deb  # Шлях до створеного deb пакету
+          name: devops16-deb-package
+          path: ../*.deb  # Correct path to the generated .deb file
