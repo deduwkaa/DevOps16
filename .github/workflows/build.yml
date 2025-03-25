@@ -47,7 +47,7 @@ jobs:
         run: make dist
 
       - name: Upload tarball artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: devops16-tarball
           path: devops16-*.tar.gz  # Corrected path to match the generated tarball
@@ -67,7 +67,7 @@ jobs:
         run: debuild -us -uc
 
       - name: Upload Debian package artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: devops16-deb-package
           path: ../*.deb  # Correct path to the generated .deb file
