@@ -47,7 +47,7 @@ jobs:
         run: make dist
 
       - name: Upload tarball artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v2
         with:
           name: DevOps16-tarball
           path: DevOps16-1.0.tar.gz  # Шлях до створеного tarball
@@ -67,7 +67,7 @@ jobs:
         run: debuild -us -uc
 
       - name: Upload Debian package artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v2
         with:
           name: DevOps16-deb-package
           path: ../*.deb  # Шлях до створеного deb пакету
