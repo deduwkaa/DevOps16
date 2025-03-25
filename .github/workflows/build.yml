@@ -1,0 +1,26 @@
+name: C++ Build
+
+on:
+  push:
+    branches:
+      - branchMake
+  pull_request:
+    branches:
+      - branchMake
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up C++ environment
+        run: sudo apt-get install build-essential
+
+      - name: Build the project
+        run: make
+
+      - name: Run tests (if any)
+        run: ./my_program # Якщо є тести або програма
