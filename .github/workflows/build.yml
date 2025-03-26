@@ -1,12 +1,16 @@
-name: C++ Build
+name: C++ Build, Tarball, and Debian Package
 
 on:
   push:
     branches:
       - branchMake
+      - branchAutomake  # Add this branch to create a tarball
+      - branchAutoPackage  # Add this branch to create a deb package
   pull_request:
     branches:
       - branchMake
+      - branchAutomake
+      - branchAutoPackage
 
 jobs:
   build:
@@ -17,10 +21,55 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Set up C++ environment
-        run: sudo apt-get install build-essential
+        run: sudo apt-get install -y build-essential
 
       - name: Build the project
         run: make
 
-      - name: Run tests (if any)
-        run: ./my_program # Якщо є тести або програма
+  build_tarball:
+    runs-on: ubuntu-latest
+    needs: build  # Depends on the 'build' job
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install automake, autoconf, and other dependencies
+        run: sudo apt-get install -y automake autoconf dpkg-dev
+
+      - name: Generate configuration files
+        run: autoreconf --install
+
+      - name: Configure the project
+        run: ./configure
+
+      - name: Create tarball
+        run: make dist
+
+      - name: Upload tarball artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: devops16_1.0.orig.tar.gz
+          path: devops16-*.tar.gz  # Corrected path to match the generated tarball
+
+  build_deb:
+    runs-on: ubuntu-latest
+    needs: build_tarball  # Depends on the 'build_tarball' job
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install dependencies for Debian package
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential dpkg-dev devscripts
+
+      - name: Build Debian package
+        run: debuild -us -uc
+
+      - name: Upload Debian package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: devops16-deb-package
+          path: ../*.deb  # Correct path to the generated .deb file

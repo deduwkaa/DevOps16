@@ -1,0 +1,5 @@
+#!/usr/bin/make -f
+# This file is used to build your package with debhelper
+
+%:
+	dh $@ --with=auto

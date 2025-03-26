@@ -1,0 +1,14 @@
+Source: devops16
+Section: utils
+Priority: optional
+Maintainer: Danyl Rymar <rymar.danyl@lll.kpi.ua>
+Build-Depends: debhelper (>= 12), autotools-dev, pkg-config
+Standards-Version: 4.5.0
+Homepage: http://devops16.example.com
+Vcs-Git: https://github.com/deduwkaa/DevOps16.git
+Vcs-Browser: https://github.com/deduwkaa/DevOps16
+
+Package: devops16
+Architecture: arm64
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: A tool for DevOps automation This is a utility program for DevOps automation. It allows users to manage deployment and build pipelines with ease.
