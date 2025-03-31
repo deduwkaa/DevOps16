@@ -24,4 +24,4 @@ RUN make
 EXPOSE 8080
 
 # Run the server
-CMD ["./httpServer"]
+CMD ["./my_program"]
