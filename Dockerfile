@@ -3,7 +3,7 @@ FROM ubuntu:20.04
 
 # Install required dependencies
 RUN apt-get update && \
-    apt-get install -y \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y \
     build-essential \
     libboost-all-dev \
     cmake \
