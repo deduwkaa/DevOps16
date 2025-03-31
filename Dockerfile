@@ -18,7 +18,7 @@ COPY . /app
 WORKDIR /app
 
 # Create and build the application
-RUN cmake . && make
+RUN make
 
 # Expose port for HTTP server
 EXPOSE 8080
