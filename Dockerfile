@@ -1,30 +1,33 @@
-# Use an official Ubuntu base image
-FROM ubuntu:20.04
+# Step 1: Use an official Ubuntu (or other suitable) image to build the software
+FROM ubuntu:20.04 as builder
 
-# Set environment variables to avoid interactive prompts
-ENV DEBIAN_FRONTEND=noninteractive
-
-# Install necessary dependencies including Boost and build tools
-RUN apt-get update && \
-    apt-get install -y \
+# Install dependencies for building the software
+RUN apt-get update && apt-get install -y \
     build-essential \
-    cmake \
+    git \
     g++ \
-    wget \
-    libboost-all-dev \
+    cmake \
     && rm -rf /var/lib/apt/lists/*
 
-# Set the working directory inside the container
-WORKDIR /app
+# Clone the repository (replace with your actual repo URL)
+RUN git clone -b branchHTTPserver https://github.com/deduwkaa/DevOps16.git /src
 
-# Copy your source code and Makefile into the container
-COPY . /app
+# Set working directory inside the cloned repository
+WORKDIR /src
 
-# Build the project using the Makefile
-RUN make
+# Build the software (modify as needed based on your build process)
+RUN mkdir -p build && cd build && cmake .. && make
 
-# Expose the port that your HTTP server is listening on
-EXPOSE 8080
+# Step 2: Use a smaller Alpine image for the final image
+FROM alpine:3.17
 
-# Run the server executable (replace with your actual executable name if different)
-CMD ["./my_program"]
+# Install dependencies for running the executable (e.g., libc, libstdc++, etc.)
+RUN apk add --no-cache \
+    libstdc++ \
+    && rm -rf /var/cache/apk/*
+
+# Step 3: Copy the built executable from the builder image
+COPY --from=builder /src/build/my_program /usr/local/bin/my_program
+
+# Set the default command to run the executable
+CMD ["/usr/local/bin/my_program"]
