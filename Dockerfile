@@ -22,7 +22,7 @@ RUN git clone -b branchHTTPserver https://github.com/deduwkaa/DevOps16.git /src
 WORKDIR /src
 
 # Build the software (modify as needed based on your build process)
-RUN mkdir -p build && cd build && cmake .. && make
+RUN make
 
 # Step 2: Use a smaller Alpine image for the final image
 FROM alpine:3.17
