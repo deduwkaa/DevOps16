@@ -1,13 +1,18 @@
 # Step 1: Use an official Ubuntu (or other suitable) image to build the software
 FROM ubuntu:20.04 as builder
 
-# Install dependencies for building the software
+ENV TZ=America/New_York
+
+# Install dependencies for building the software and configure timezone
 RUN apt-get update && apt-get install -y \
     build-essential \
     git \
     g++ \
     cmake \
-    && rm -rf /var/lib/apt/lists/*
+    tzdata \
+    && rm -rf /var/lib/apt/lists/* \
+    && ln -fs /usr/share/zoneinfo/$TZ /etc/localtime \
+    && dpkg-reconfigure --frontend noninteractive tzdata
 
 # Clone the repository (replace with your actual repo URL)
 RUN git clone -b branchHTTPserver https://github.com/deduwkaa/DevOps16.git /src
