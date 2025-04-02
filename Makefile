@@ -1,11 +1,15 @@
 # Compiler
 CXX = g++
+
 # Compiler flags
 CXXFLAGS = -Wall -g
+
 # Executable name
 TARGET = my_program
-# Source files
-SRCS = $(wildcard *.cpp)
+
+# Source files excluding main.cpp and httpServerTests.cpp
+SRCS = $(filter-out main.cpp,httpServerTests.cpp,$(wildcard *.cpp))
+
 # Object files
 OBJS = $(SRCS:.cpp=.o)
 
