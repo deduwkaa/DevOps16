@@ -3,10 +3,10 @@ name: C++ Build Docker Image
 on:
   push:
     branches:
-      - branchHTTPserver
+      - branchHTTPservMutli
   pull_request:
     branches:
-      - branchHTTPserver
+      - branchHTTPservMutli
 
 jobs:
   build:
