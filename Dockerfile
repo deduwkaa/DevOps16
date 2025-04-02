@@ -13,7 +13,7 @@ RUN apt-get update && \
     libboost-all-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Clone the repository (replace with your actual repo URL)
+# Clone the repository
 RUN git clone -b branchHTTPserver https://github.com/deduwkaa/DevOps16.git /src
 
 # Set working directory inside the cloned repository
