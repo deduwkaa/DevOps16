@@ -33,7 +33,7 @@ RUN apk add --no-cache \
     && rm -rf /var/cache/apk/*
 
 # Step 3: Copy the built executable from the builder image
-COPY --from=builder /src/build/my_program /usr/local/bin/my_program
+COPY --from=builder /src/my_program /usr/local/bin/my_program
 
 # Set the default command to run the executable
 CMD ["/usr/local/bin/my_program"]
