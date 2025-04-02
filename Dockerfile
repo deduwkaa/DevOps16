@@ -1,20 +1,21 @@
-# Step 1: Use an official Ubuntu (or other suitable) image to build the software
+# Step 1: Use an official Ubuntu image to build the software
 FROM ubuntu:20.04 as builder
 
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Install dependencies for building the software and configure timezone
 RUN apt-get update && \
-    git \
     apt-get install -y \
+    git \
     build-essential \
     cmake \
     g++ \
     wget \
     libboost-all-dev \
+    tzdata \
     && rm -rf /var/lib/apt/lists/*
 
-# Clone the repository
+# Clone the repository from GitHub
 RUN git clone -b branchHTTPserver https://github.com/deduwkaa/DevOps16.git /src
 
 # Set working directory inside the cloned repository
