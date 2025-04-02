@@ -1,8 +1,8 @@
 # Compiler
 CXX = g++
 
-# Compiler flags
-CXXFLAGS = -Wall -g
+# Compiler flags (add -pthread for Boost.Asio threading and signal handling)
+CXXFLAGS = -Wall -g -pthread
 
 # Executable name
 TARGET = my_program
@@ -19,7 +19,7 @@ all: $(TARGET)
 
 # Link the object files into the final executable
 $(TARGET): $(OBJS)
-	$(CXX) $(OBJS) -o $(TARGET)
+	$(CXX) $(OBJS) -o $(TARGET) -pthread
 
 # Compile the .cpp files into .o object files
 %.o: %.cpp
