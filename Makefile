@@ -8,7 +8,8 @@ CXXFLAGS = -Wall -g
 TARGET = my_program
 
 # Source files excluding main.cpp and httpServerTests.cpp
-SRCS = $(filter-out main.cpp,httpServerTests.cpp,$(wildcard *.cpp))
+SRCS = $(wildcard *.cpp)
+SRCS := $(filter-out main.cpp httpServerTests.cpp, $(SRCS))
 
 # Object files
 OBJS = $(SRCS:.cpp=.o)
