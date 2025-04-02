@@ -5,6 +5,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # Install dependencies for building the software and configure timezone
 RUN apt-get update && \
+    git \
     apt-get install -y \
     build-essential \
     cmake \
