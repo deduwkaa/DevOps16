@@ -13,7 +13,7 @@ launch_container() {
     local core=$2
     local port=$3
     echo "Launching container $name on CPU core#$core..."
-    docker run -d --name $name --cpuset-cpus=$core -p $port:8081 $IMAGE
+    docker run -d --platform linux/amd64 --name $name --cpuset-cpus=$core -p $port:8081 $IMAGE
 
     echo "Waiting 15 seconds to build docker"
     sleep 15
