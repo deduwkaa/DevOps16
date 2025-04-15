@@ -8,6 +8,7 @@
 #include <chrono>
 #include <algorithm>
 #include "FuncA.h"
+#include <thread> 
 
 namespace beast = boost::beast;     // For HTTP
 namespace asio = boost::asio;       // For Asio
@@ -35,6 +36,8 @@ private:
 void handle_request(beast::http::request<beast::http::string_body>& req, beast::http::response<beast::http::string_body>& res) {
     LogarithmicFunctions logFunc;
     auto start = std::chrono::high_resolution_clock::now();
+
+    std::this_thread::sleep_for(std::chrono::seconds(3));
 
     // We assume we want to calculate ln(1 + x) for x = 0.5 (just as an example)
     double x = 0.5;  // Example input for ln(1 + x)
