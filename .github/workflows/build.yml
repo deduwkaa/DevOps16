@@ -27,7 +27,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build --platform linux/arm64 -t ${{ secrets.DOCKER_USERNAME }}/devops-16:latest .
+          docker buildx --platform linux/arm64 -t ${{ secrets.DOCKER_USERNAME }}/devops-16:latest .
 
       - name: Push Docker image to Docker Hub
         run: |
