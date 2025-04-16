@@ -28,7 +28,7 @@ public:
     }
 
 private:
-    FuncA funcA;  // Instance of FuncA class
+    FuncA funcA;  // Instance of FuncA classs
 };
 
 // Function to handle HTTP requests
