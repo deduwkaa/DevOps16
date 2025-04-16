@@ -72,7 +72,7 @@ while true; do
             break
         fi
     done
-done
+    
     fi
 
     sleep $CHECK_INTERVAL
