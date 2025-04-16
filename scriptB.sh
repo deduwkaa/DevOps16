@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SERVER_URL="127.0.0.1/compute"
+SERVER_URL="http://127.0.0.1:8088/compute"
 
 send_request() {
     while true; do
