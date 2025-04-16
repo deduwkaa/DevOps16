@@ -1,82 +1,110 @@
 #!/bin/bash
 
-IMAGE="deduwka/devops-16:v1"
-CPU_CORES=(0 1 2)
+# --- CONFIGURATION ---
+IMAGE="deduwka/devops-16:latest"
+NETWORK="my-network"
+PORT_BASE=8080
 CONTAINERS=("srv1" "srv2" "srv3")
-PORTS=(8081 8082 8083)
-CHECK_INTERVAL=10
-BUSY_THRESHOLD=70.0
-IDLE_THRESHOLD=5.0
-NETWORK="creditnet"
+CPUS=(0 1 2)
+CHECK_INTERVAL=30  # seconds
+BUSY_THRESHOLD=10  # CPU usage percent
+BUSY_LIMIT=4       # i.e. 2 minutes if CHECK_INTERVAL is 30s
+IDLE_LIMIT=4       # same for idling
+UPDATE_CHECK_INTERVAL=300 # 5 mins
 
-# Ensure network exists
-docker network inspect $NETWORK >/dev/null 2>&1 || docker network create $NETWORK
+# --- STATE TRACKERS ---
+declare -A busy_counters
+declare -A idle_counters
 
-# Launch nginx container (only once)
-if ! docker ps -q --filter "name=nginx-lb" >/dev/null; then
-    echo "Starting nginx load balancer..."
-    docker run -d --name nginx-lb --network $NETWORK -p 8088:80 -v $(pwd)/nginx.conf:/etc/nginx/nginx.conf:ro nginx
-fi
-
-launch_container() {
-    local name=$1
-    local core=$2
-    echo "Launching container $name on CPU core#$core..."
-    docker run -d --platform linux/arm64 --name $name --cpuset-cpus=$core --network $NETWORK $IMAGE
-    echo "Waiting 15 seconds to build docker"
-    sleep 15
+# Pull latest image and detect if new
+pull_and_check_update() {
+    echo "[INFO] Checking for image updates..."
+    local old_id=$(docker inspect --format='{{.Id}}' $IMAGE 2>/dev/null)
+    docker pull $IMAGE > /dev/null
+    local new_id=$(docker inspect --format='{{.Id}}' $IMAGE 2>/dev/null)
+    [[ "$old_id" != "$new_id" ]]
 }
 
-get_cpu_usage() {
+# Start container on specific CPU
+start_container() {
     local name=$1
-    docker stats --no-stream --format "{{.CPUPerc}}" $name | sed 's/%//'
+    local cpu=$2
+    local port=$((PORT_BASE + cpu + 1))
+    echo "[INFO] Starting $name on CPU#$cpu (port $port)..."
+    docker run -d --name "$name" \
+        --cpuset-cpus="$cpu" \
+        --network="$NETWORK" \
+        -p "$port":8080 \
+        "$IMAGE" > /dev/null
 }
 
+# Stop and remove a container
 stop_container() {
     local name=$1
-    echo "Stopping container $name..."
-    docker kill --signal=SIGINT $name
-    docker wait $name
-    docker rm $name
+    echo "[INFO] Stopping and removing $name..."
+    docker stop "$name" > /dev/null
+    docker rm "$name" > /dev/null
 }
 
-active_containers=()
-launch_container "${CONTAINERS[0]}" "${CPU_CORES[0]}"
-active_containers+=("${CONTAINERS[0]}")
+# Update running containers (one at a time)
+update_containers() {
+    echo "[INFO] Updating containers with new image..."
+    for name in "${CONTAINERS[@]}"; do
+        if docker ps -q -f name="^/${name}$" > /dev/null; then
+            echo "[INFO] Updating $name..."
+            start_container "${name}_new" "${CPUS[${name:3}-1]}"
+            sleep 5
+            stop_container "$name"
+            docker rename "${name}_new" "$name"
+        fi
+    done
+}
 
+# Main loop
+last_update_check=0
 while true; do
+    current_time=$(date +%s)
+
+    # Check and manage each container
     for i in "${!CONTAINERS[@]}"; do
         name="${CONTAINERS[$i]}"
+        cpu="${CPUS[$i]}"
+        running=$(docker ps -q -f name="^/${name}$")
 
-        if [[ $(docker ps -q --filter "name=$name") ]]; then
-            cpu_usage=$(get_cpu_usage "$name")
-            echo "Container $name: CPU usage = $cpu_usage%"
+        if [ -n "$running" ]; then
+            usage=$(docker stats --no-stream --format "{{.CPUPerc}}" "$name" | sed 's/%//')
+            usage=${usage%%.*}
+            usage=${usage:-0}
 
-            if (( $(echo "$cpu_usage > $BUSY_THRESHOLD" | bc -l) )) && [[ $i -lt 2 ]]; then
-                next_name="${CONTAINERS[$i+1]}"
-                if ! [[ "${active_containers[@]}" =~ $next_name ]]; then
-                    launch_container "$next_name" "${CPU_CORES[$i+1]}"
-                    active_containers+=("$next_name")
+            if (( usage > BUSY_THRESHOLD )); then
+                ((busy_counters[$name]++))
+                idle_counters[$name]=0
+            else
+                ((idle_counters[$name]++))
+                busy_counters[$name]=0
+            fi
+
+            # Check if next container should start
+            if (( i < 2 )); then
+                next="${CONTAINERS[$i+1]}"
+                if (( busy_counters[$name] >= BUSY_LIMIT )) && ! docker ps -q -f name="^/${next}$" > /dev/null; then
+                    start_container "$next" "${CPUS[$i+1]}"
                 fi
             fi
 
-            if (( $(echo "$cpu_usage < $IDLE_THRESHOLD" | bc -l) )) && [[ $i -gt 0 ]]; then
-                echo "Container $name is idle. Stopping..."
+            # Check if current should be stopped (if next exists and idle)
+            if (( idle_counters[$name] >= IDLE_LIMIT )) && (( i > 0 )); then
                 stop_container "$name"
-                active_containers=("${active_containers[@]/$name}")
             fi
         fi
     done
 
-    echo "Checking for image updates..."
-    pullResult=$(docker pull $IMAGE | grep "Downloaded newer image")
-    if [[ -n "$pullResult" ]]; then
-        echo "New image update found. Restarting containers..."
-        for name in "${active_containers[@]}"; do
-            stop_container "$name"
-            index=${!CONTAINERS[@]}
-            launch_container "$name" "${CPU_CORES[$index]}"
-        done
+    # Check for image update
+    if (( current_time - last_update_check > UPDATE_CHECK_INTERVAL )); then
+        if pull_and_check_update; then
+            update_containers
+        fi
+        last_update_check=$current_time
     fi
 
     sleep $CHECK_INTERVAL
