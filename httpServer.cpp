@@ -36,10 +36,6 @@ private:
 void handle_request(beast::http::request<beast::http::string_body>& req, beast::http::response<beast::http::string_body>& res) {
     LogarithmicFunctions logFunc;
     auto start = std::chrono::high_resolution_clock::now();
-
-    std::this_thread::sleep_for(std::chrono::seconds(3));
-
-    // We assume we want to calculate ln(1 + x) for x = 0.5 (just as an example)
     double x = 0.5;  // Example input for ln(1 + x)
     int n = 10;  // Number of terms to use in the series expansion
 
@@ -74,6 +70,8 @@ void do_session(tcp::socket& socket) {
         // Handle the request and send response
         handle_request(req, res);
 
+        // Imitate highload
+        std::this_thread::sleep_for(std::chrono::seconds(3));
         // Send the HTTP response
         beast::http::write(socket, res);
     } catch (const beast::system_error& e) {
