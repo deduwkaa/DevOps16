@@ -65,10 +65,14 @@ while true; do
     if [[ -n "$pullResult" ]]; then
         echo "New image update found. Restarting containers..."
         for name in "${active_containers[@]}"; do
-            stop_container "$name"
-            index=${!CONTAINERS[@]}
-            launch_container "$name" "${CPU_CORES[$index]}" "${PORTS[$index]}"
-        done
+    stop_container "$name"
+    for i in "${!CONTAINERS[@]}"; do
+        if [[ "${CONTAINERS[$i]}" == "$name" ]]; then
+            launch_container "$name" "${CPU_CORES[$i]}" "${PORTS[$i]}"
+            break
+        fi
+    done
+done
     fi
 
     sleep $CHECK_INTERVAL
