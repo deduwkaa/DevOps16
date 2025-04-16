@@ -7,14 +7,22 @@ PORTS=(8081 8082 8083)
 CHECK_INTERVAL=10
 BUSY_THRESHOLD=70.0
 IDLE_THRESHOLD=5.0
+NETWORK="creditnet"
+
+# Ensure network exists
+docker network inspect $NETWORK >/dev/null 2>&1 || docker network create $NETWORK
+
+# Launch nginx container (only once)
+if ! docker ps -q --filter "name=nginx-lb" >/dev/null; then
+    echo "Starting nginx load balancer..."
+    docker run -d --name nginx-lb --network $NETWORK -p 8088:80 -v $(pwd)/nginx.conf:/etc/nginx/nginx.conf:ro nginx
+fi
 
 launch_container() {
     local name=$1
     local core=$2
-    local port=$3
     echo "Launching container $name on CPU core#$core..."
-    docker run -d --platform linux/amd64 --name $name --cpuset-cpus=$core -p $port:8081 $IMAGE
-
+    docker run -d --platform linux/amd64 --name $name --cpuset-cpus=$core --network $NETWORK $IMAGE
     echo "Waiting 15 seconds to build docker"
     sleep 15
 }
@@ -33,7 +41,7 @@ stop_container() {
 }
 
 active_containers=()
-launch_container "${CONTAINERS[0]}" "${CPU_CORES[0]}" "${PORTS[0]}"
+launch_container "${CONTAINERS[0]}" "${CPU_CORES[0]}"
 active_containers+=("${CONTAINERS[0]}")
 
 while true; do
@@ -47,7 +55,7 @@ while true; do
             if (( $(echo "$cpu_usage > $BUSY_THRESHOLD" | bc -l) )) && [[ $i -lt 2 ]]; then
                 next_name="${CONTAINERS[$i+1]}"
                 if ! [[ "${active_containers[@]}" =~ $next_name ]]; then
-                    launch_container "$next_name" "${CPU_CORES[$i+1]}" "${PORTS[$i+1]}"
+                    launch_container "$next_name" "${CPU_CORES[$i+1]}"
                     active_containers+=("$next_name")
                 fi
             fi
@@ -67,7 +75,7 @@ while true; do
         for name in "${active_containers[@]}"; do
             stop_container "$name"
             index=${!CONTAINERS[@]}
-            launch_container "$name" "${CPU_CORES[$index]}" "${PORTS[$index]}"
+            launch_container "$name" "${CPU_CORES[$index]}"
         done
     fi
 
