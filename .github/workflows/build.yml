@@ -3,14 +3,10 @@ name: C++ Build, Tarball, and Debian Package
 on:
   push:
     branches:
-      - branchMake
       - branchAutomake  # Add this branch to create a tarball
-      - branchAutoPackage  # Add this branch to create a deb package
   pull_request:
     branches:
-      - branchMake
       - branchAutomake
-      - branchAutoPackage
 
 jobs:
   build:
