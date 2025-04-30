@@ -9,6 +9,6 @@ Vcs-Git: https://github.com/deduwkaa/DevOps16.git
 Vcs-Browser: https://github.com/deduwkaa/DevOps16
 
 Package: devops16
-Architecture: arm64
+Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: A tool for DevOps automation This is a utility program for DevOps automation. It allows users to manage deployment and build pipelines with ease.
