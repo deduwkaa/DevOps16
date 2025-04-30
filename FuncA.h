@@ -8,7 +8,7 @@ public:
     // Функція calculate для обчислення суми перших n елементів ряду
     /*
      * Class FuncA
-     * Function calculate(int n, double x)
+     * Function calculate(int n,double x)
      * Parameters:
      *   n - кількість елементів ряду
      *   x - аргумент функції ln(1+x)
