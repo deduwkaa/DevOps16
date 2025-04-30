@@ -6,7 +6,6 @@ devops16_SOURCES = main.cpp
 DEB_INSTALL = debian/DevOps16.install
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = devops16.pc
 dist_pkgdata_DATA = $(DEB_INSTALL)
 
 # Additional files to distribute
