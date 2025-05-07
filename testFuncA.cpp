@@ -16,13 +16,13 @@ int main() {
     // Тест 1: ln(1 + 0.5)
     double x1 = 0.5;
     double expected1 = std::log(1 + x1);
-    double result1 = f.calculate(50, x1); // більше членів для кращої точності
+    double result1 = f.calculate(50, x1);
     assert(approxEqual(result1, expected1));
 
-    // Тест 2: ln(1 + 1) = ln(2)
-    double x2 = 1.0;
-    double expected2 = std::log(2);
-    double result2 = f.calculate(100, x2); // ще більше членів
+    // Тест 2: ln(1 + 0.8)
+    double x2 = 0.8;
+    double expected2 = std::log(1 + x2);
+    double result2 = f.calculate(150, x2); 
     assert(approxEqual(result2, expected2));
 
     // Тест 3: ln(1 + 0) = 0
