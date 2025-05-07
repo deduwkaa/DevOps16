@@ -1,13 +1,13 @@
-# Назва основної програми
+# Основна програма та тест
 TARGET = my_program
 TEST = testFuncA
 
-# Компiлятор та флаги
+# Компілятор і флаги
 CXX = g++
 CXXFLAGS = -Wall -std=c++11
 
-# Основні файли
-SRCS = main.cpp funcA.cpp
+# Файли
+SRCS = main.cpp
 OBJS = $(SRCS:.cpp=.o)
 
 # Збірка основної програми
@@ -22,12 +22,12 @@ $(TARGET): $(OBJS)
 # Збірка юніт-тесту
 test: $(TEST)
 
-$(TEST): testFuncA.cpp funcA.o
-	$(CXX) $(CXXFLAGS) testFuncA.cpp funcA.o -o $(TEST)
+$(TEST): testFuncA.cpp FuncA.h
+	$(CXX) $(CXXFLAGS) testFuncA.cpp -o $(TEST)
 
 # Очистка
 clean:
 	rm -f $(OBJS) $(TARGET) $(TEST)
 
-# Перезбірка
+# Повна перебудова
 rebuild: clean all
