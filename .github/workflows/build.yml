@@ -61,7 +61,7 @@ jobs:
           fi
 
       - name: Upload tarball artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v2
         with:
           name: DevOps16-tarball
           path: ./DevOps16-1.0.tar.gz
