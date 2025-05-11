@@ -59,9 +59,3 @@ jobs:
             echo "Error: Tarball not created!" >&2
             exit 1
           fi
-
-      - name: Upload tarball artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: DevOps16-tarball
-          path: ./DevOps16-1.0.tar.gz
