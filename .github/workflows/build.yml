@@ -52,7 +52,13 @@ jobs:
         run: ./configure
 
       - name: Create tarball
-        run: make dist
+        run: |
+          make dist
+          ls -lh ./ || true
+          if [ ! -f ./DevOps16-1.0.tar.gz ]; then
+            echo "Error: Tarball not created!" >&2
+            exit 1
+          fi
 
       - name: Upload tarball artifact
         uses: actions/upload-artifact@v3
