@@ -58,4 +58,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: DevOps16-tarball
-          path: DevOps16-1.0.tar.gz
+          path: ./DevOps16-1.0.tar.gz
